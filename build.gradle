@@ -18,17 +18,5 @@ dependencies {
 
 application {
     mainClass = 'homer.tastyworld.Main'
-    // Автоматически добавляем папку с DLL в java.library.path при запуске
-    applicationDefaultJvmArgs = [
-            "-Djava.library.path=./src/main/resources/dll"
-    ]
 }
 
-// Копируем DLL в папку сборки
-tasks.register('copyDll', Copy) {
-    from 'src/main/resources/dll'
-    into 'build/libs'
-    include '*.dll'
-}
-
-build.dependsOn copyDll
