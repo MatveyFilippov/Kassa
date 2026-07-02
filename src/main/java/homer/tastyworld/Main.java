@@ -6,6 +6,7 @@ import homer.tastyworld.util.RequestIdGenerator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.File;
 
 /**
  * Пример использования SberbankTerminal.
@@ -20,6 +21,18 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+
+    static {
+        try {
+            // Загружаем DLL из папки проекта
+            String path = new File("src/main/resources/dill/jacob-1.18-x64.dll").getAbsolutePath();
+            System.load(path);
+            log.info("JACOB DLL загружена успешно");
+        } catch (UnsatisfiedLinkError e) {
+            log.error("Ошибка загрузки JACOB DLL", e);
+            System.exit(1);
+        }
+    }
 
     private static void makePay(SberbankTerminal terminal, long kopecks) {
         // Генерация уникального RequestID
