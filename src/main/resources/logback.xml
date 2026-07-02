@@ -8,7 +8,7 @@
 
     <!-- Вывод в файл (логи будут дописываться, размер файла ограничен 10MB) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/myapp.log</file>
+        <file>logs/Kassa.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <maxFileSize>10MB</maxFileSize>
         </rollingPolicy>
