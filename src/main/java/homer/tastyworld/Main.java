@@ -21,58 +21,39 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    private static void makePay(SberbankTerminal terminal, long kopecks) {
-        // Генерация уникального RequestID
-        String requestId = RequestIdGenerator.generate();
-        log.info("Сгенерирован RequestID: {}", requestId);
-
-        // ОПЛАТА 1000
+    private static String makePay(SberbankTerminal terminal, long kopecks) {
         log.info("=== ОПЛАТА {} КОП ===", kopecks);
+
+        String requestId = RequestIdGenerator.generate();
+        log.info("Сгенерирован RequestID для оплаты: {}", requestId);
+
         PaymentRequest paymentRequest = new PaymentRequest.Builder(kopecks)
                                                            .withRequestId(requestId)
                                                            .withCashierFio("Иванов Иван Иванович (тест)")
                                                            .build();
 
         PaymentResponse paymentResponse = terminal.pay(paymentRequest);
+        log.info("Результат оплаты: {}", paymentResponse);
 
         if (paymentResponse.isSuccess()) {
-            log.info("✅ ОПЛАТА УСПЕШНА!");
-            log.info("RRN: {}", paymentResponse.getRrn());
-            log.info("AuthCode: {}", paymentResponse.getAuthCode());
-            log.info("Номер карты: {}", paymentResponse.getClientCard());
-            log.info("Дата: {}", paymentResponse.getTransactionDate());
-            log.info("Время: {}", paymentResponse.getTransactionTime());
-            log.info("QueryRequestID: {}", paymentResponse.getQueryRequestId());
-
-            // Печать чека (сохраняем в файл для примера)
-            System.out.println("\n=== ЧЕК ===");
-            System.out.println(paymentResponse.getCheque());
-            System.out.println("===========\n");
-
-        } else {
-            log.error("❌ ОШИБКА ОПЛАТЫ!");
-            log.error("Код: {}", paymentResponse.getErrorCode());
-            log.error("Сообщение: {}", paymentResponse.getErrorMessage());
+            log.info("\n=== ЧЕК ===");
+            log.info(paymentResponse.getCheque());
+            log.info("===========");
         }
 
         // ПРОВЕРКА СТАТУСА ОПЕРАЦИИ
         log.info("\n=== ПРОВЕРКА СТАТУСА ===");
         PaymentResponse statusResponse = terminal.checkStatus(requestId);
+        log.info("Результат проверки статуса: {}", statusResponse);
 
-        if (statusResponse.isSuccess()) {
-            log.info("✅ СТАТУС: Операция найдена");
-            log.info("RRN: {}", statusResponse.getRrn());
-            log.info("Чек доступен: {}", statusResponse.getCheque() != null ? "ДА" : "НЕТ");
-        } else {
-            log.warn("⚠️ СТАТУС: {} (код {})",
-                     statusResponse.getErrorMessage(),
-                     statusResponse.getErrorCode()
-            );
-        }
+        log.info("=== КОНЕЦ ОПЛАТЫ ===");
+
+        return paymentResponse.getRrn();
     }
 
     private static void makeRefound(SberbankTerminal terminal, long kopecks, String rrn) {
         log.info("\n=== ВОЗВРАТ СРЕДСТВ ===");
+
         String refundRequestId = RequestIdGenerator.generate();
         log.info("Сгенерирован RequestID для возврата: {}", refundRequestId);
 
@@ -83,22 +64,15 @@ public class Main {
                                                           .build();
 
         PaymentResponse refundResponse = terminal.refund(refundRequest);
+        log.info("Результат возврата: {}", refundResponse);
 
         if (refundResponse.isSuccess()) {
-            log.info("✅ ВОЗВРАТ УСПЕШЕН!");
-            log.info("RRN возврата: {}", refundResponse.getRrn());
-            log.info("AuthCode возврата: {}", refundResponse.getAuthCode());
-            // log.info("Деньги вернулись на карту: {}", refundResponse.getClientCard());
-
-            System.out.println("\n=== ЧЕК ВОЗВРАТА ===");
-            System.out.println(refundResponse.getCheque());
-            System.out.println("==================\n");
-
-        } else {
-            log.error("❌ ОШИБКА ВОЗВРАТА!");
-            log.error("Код: {}", refundResponse.getErrorCode());
-            log.error("Сообщение: {}", refundResponse.getErrorMessage());
+            log.info("\n=== ЧЕК ВОЗВРАТА ===");
+            log.info(refundResponse.getCheque());
+            log.info("==================\n");
         }
+
+        log.info("=== КОНЕЦ ВОЗВРАТА ===");
     }
 
     public static void main(String[] args) {
@@ -107,8 +81,11 @@ public class Main {
             terminal.connect();
             log.info("Терминал подключен!\n");
 
-            makePay(terminal, 100);  // 1 руб = 100 коп
-            // makeRefound(terminal, 100, null);  // Or use RNN String
+            String rrn = makePay(terminal, 100);  // 1 руб = 100 коп
+            makeRefound(terminal, 100, null);  // By card
+            // if (rrn != null) {
+            //     makeRefound(terminal, 100, rrn);  // By rrn
+            // }
         } catch (Exception e) {
             log.error("Критическая ошибка в примере", e);
         }

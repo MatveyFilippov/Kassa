@@ -82,8 +82,8 @@ public class PaymentResponse {
     @Override
     public String toString() {
         if (success) {
-            return String.format("PaymentResponse{success=true, rrn='%s', authCode='%s', amount='%s'}",
-                                 rrn, authCode, cheque != null ? "ЧЕК ДОСТУПЕН" : "НЕТ ЧЕКА");
+            return String.format("PaymentResponse{success=true, queryRequestId='%s', rrn='%s', authCode='%s', amount='%s', clientCard='%s', date='%s', time='%s'}",
+                                 queryRequestId, rrn, authCode, cheque != null ? "ЧЕК ДОСТУПЕН" : "НЕТ ЧЕКА", clientCard, transactionDate, transactionTime);
         } else {
             return String.format("PaymentResponse{success=false, errorCode=%d, errorMessage='%s'}",
                                  errorCode, errorMessage);
