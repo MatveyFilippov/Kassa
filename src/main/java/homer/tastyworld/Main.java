@@ -31,7 +31,6 @@ public class Main {
         PaymentRequest paymentRequest = new PaymentRequest.Builder(kopecks)
                                                            .withRequestId(requestId)
                                                            .withCashierFio("Иванов Иван Иванович")
-                                                           .withDepartment(1) // Отдел №1
                                                            .build();
 
         PaymentResponse paymentResponse = terminal.pay(paymentRequest);

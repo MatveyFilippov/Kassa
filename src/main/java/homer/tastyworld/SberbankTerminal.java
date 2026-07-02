@@ -135,7 +135,6 @@ public class SberbankTerminal implements AutoCloseable {
             Map<String, String> params = parameterMapper.createPaymentParams(
                     request.getAmountKopecks(),
                     request.getRequestId(),
-                    request.getDepartment(),
                     request.getCurrencyCode(),
                     request.getCashierFio()
             );
@@ -209,7 +208,6 @@ public class SberbankTerminal implements AutoCloseable {
             Map<String, String> params = parameterMapper.createPaymentParams(
                     request.getAmountKopecks(),
                     request.getRequestId(),
-                    request.getDepartment(),
                     request.getCurrencyCode(),
                     request.getCashierFio()
             );

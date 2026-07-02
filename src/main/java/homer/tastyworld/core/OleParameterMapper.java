@@ -67,8 +67,7 @@ public class OleParameterMapper {
      * Создает Map параметров для операции оплаты.
      */
     public Map<String, String> createPaymentParams(long amountKopecks, String requestId,
-                                                   Integer department, Integer currencyCode,
-                                                   String cashierFio) {
+                                                   Integer currencyCode, String cashierFio) {
         Map<String, String> params = new HashMap<>();
 
         // Обязательные параметры
@@ -80,10 +79,6 @@ public class OleParameterMapper {
             params.put("RequestID", requestId);
         }
 
-        // Необязательные параметры
-        if (department != null) {
-            params.put("Department", String.valueOf(department));
-        }
         if (currencyCode != null) {
             params.put("Currency", String.valueOf(currencyCode));
         }

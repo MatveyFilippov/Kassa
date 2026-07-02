@@ -31,15 +31,6 @@ public class PaymentRequest {
     private final String requestId;
 
     /**
-     * Номер отдела (необязательный параметр).
-     *
-     * <p>Используется, если терминал настроен на работу с несколькими отделами.
-     * Значения: от 0 до 14 или 255 (255 - вызов диалога выбора отдела).
-     * Если null - используется настройка терминала по умолчанию.
-     */
-    private final Integer department;
-
-    /**
      * Код валюты (необязательный параметр).
      *
      * <p>Если null - терминал запросит автоматически.
@@ -69,7 +60,6 @@ public class PaymentRequest {
     private PaymentRequest(Builder builder) {
         this.amountKopecks = builder.amountKopecks;
         this.requestId = builder.requestId;
-        this.department = builder.department;
         this.currencyCode = builder.currencyCode;
         this.cashierFio = builder.cashierFio;
         this.originalRrn = builder.originalRrn;
@@ -78,15 +68,13 @@ public class PaymentRequest {
     // Getters
     public long getAmountKopecks() { return amountKopecks; }
     public String getRequestId() { return requestId; }
-    public Integer getDepartment() { return department; }
     public Integer getCurrencyCode() { return currencyCode; }
     public String getCashierFio() { return cashierFio; }
     public String getOriginalRrn() { return originalRrn; }
 
     @Override
     public String toString() {
-        return String.format("PaymentRequest{amountKopecks=%d, requestId='%s', department=%d, currencyCode=%d}",
-                             amountKopecks, requestId, department, currencyCode);
+        return String.format("PaymentRequest{amountKopecks=%d, requestId='%s', currencyCode=%d}", amountKopecks, requestId, currencyCode);
     }
 
     /**
@@ -95,7 +83,6 @@ public class PaymentRequest {
     public static class Builder {
         private long amountKopecks;
         private String requestId;
-        private Integer department;
         private Integer currencyCode;
         private String cashierFio;
         private String originalRrn;
@@ -132,19 +119,6 @@ public class PaymentRequest {
                 }
             }
             this.requestId = requestId;
-            return this;
-        }
-
-        /**
-         * Устанавливает номер отдела.
-         *
-         * @param department от 0 до 14, или 255 (выбор из списка)
-         */
-        public Builder withDepartment(int department) {
-            if (department < 0 || (department > 14 && department != 255)) {
-                throw new IllegalArgumentException("Department должен быть от 0 до 14 или 255");
-            }
-            this.department = department;
             return this;
         }
 
