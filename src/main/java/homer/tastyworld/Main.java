@@ -25,7 +25,7 @@ public class Main {
     static {
         try {
             // Загружаем DLL из папки проекта
-            String path = new File("src/main/resources/dill/jacob-1.18-x64.dll").getAbsolutePath();
+            String path = new File("src/main/resources/dll/jacob-1.18-x64.dll").getAbsolutePath();
             System.load(path);
             log.info("JACOB DLL загружена успешно");
         } catch (UnsatisfiedLinkError e) {
