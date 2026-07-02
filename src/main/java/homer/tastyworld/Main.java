@@ -30,7 +30,7 @@ public class Main {
         log.info("=== ОПЛАТА {} КОП ===", kopecks);
         PaymentRequest paymentRequest = new PaymentRequest.Builder(kopecks)
                                                            .withRequestId(requestId)
-                                                           .withCashierFio("Иванов Иван Иванович")
+                                                           .withCashierFio("Иванов Иван Иванович (тест)")
                                                            .build();
 
         PaymentResponse paymentResponse = terminal.pay(paymentRequest);
@@ -79,7 +79,7 @@ public class Main {
         PaymentRequest refundRequest = new PaymentRequest.Builder(kopecks)
                                                           .withRequestId(refundRequestId)
                                                           .withOriginalRrn(rrn)
-                                                          .withCashierFio("Иванов И.И. (возврат)")
+                                                          .withCashierFio("Иванов И.И. (возврат теста)")
                                                           .build();
 
         PaymentResponse refundResponse = terminal.refund(refundRequest);
