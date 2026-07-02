@@ -76,18 +76,18 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        log.debug("=== Начало MAIN ===");
         try (SberbankTerminal terminal = new SberbankTerminal()) {
             log.info("=== ПОДКЛЮЧЕНИЕ К ТЕРМИНАЛУ ===");
             terminal.connect();
-            log.info("Терминал подключен!\n");
+            log.info("Терминал подключен!");
 
             String rrn = makePay(terminal, 100);  // 1 руб = 100 коп
             makeRefound(terminal, 100, null);  // By card
-            // if (rrn != null) {
-            //     makeRefound(terminal, 100, rrn);  // By rrn
-            // }
+            // makeRefound(terminal, 100, rrn);  // By rrn
         } catch (Exception e) {
             log.error("Критическая ошибка в примере", e);
         }
+        log.debug("=== Конец MAIN ===");
     }
 }
