@@ -62,6 +62,7 @@ public class SberbankTerminal implements AutoCloseable {
     private static final int OPERATION_PAYMENT = 4000;      // Оплата покупки
     private static final int OPERATION_REFUND = 4002;       // Возврат покупки
     private static final int OPERATION_STATUS_CHECK = 6006; // Проверка статуса
+    private static final int OPERATION_CLOSE_SHIFT = 6000;  // Закрыть смену
 
     // === Компоненты ===
     private final OleConnectionManager connectionManager;
@@ -346,22 +347,48 @@ public class SberbankTerminal implements AutoCloseable {
         }
     }
 
+    public void closeShift() {
+        log.info("Закрытие смены...");
+        checkReady();
+
+        try {
+            invoker.clear();
+            log.debug("Параметры очищены");
+
+            // Вызов операции закрытия смены
+            int resultCode = invoker.executeOperation(OPERATION_CLOSE_SHIFT);
+            log.info("Закрытие смены завершено с кодом: {}", resultCode);
+
+            if (resultCode == 0) {
+                String cheque = invoker.getParameter("Cheque1251");
+                log.info("=== КОНТРОЛЬНАЯ ЛЕНТА ===");
+                log.info(cheque);
+                log.info("=========================");
+                log.info("Смена закрыта");
+            } else {
+                log.error("❌ Ошибка закрытия смены: " + resultCode);
+                String error = invoker.getParameter("LastErrorTxt");
+                log.error("Текст: " + error);
+            }
+        } catch (Exception e) {
+            log.error("Критическая ошибка при проверке статуса", e);
+            throw new TerminalException(
+                    TerminalErrorCode.ERROR_UNKNOWN,
+                    "Ошибка при закрытии смены: " + e.getMessage()
+            );
+        }
+    }
+
     /**
      * Закрывает соединение с терминалом.
      */
     @Override
     public void close() {
+        closeShift();
         log.info("Закрытие сервиса...");
         isReady = false;
         connectionManager.close();
         log.info("Сервис закрыт");
-    }
-
-    /**
-     * Отключается от терминала (алиас для close).
-     */
-    public void disconnect() {
-        close();
     }
 
     /**

@@ -102,25 +102,15 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // Создание сервиса
-        SberbankTerminal terminal = new SberbankTerminal();
-
-        try {
+        try (SberbankTerminal terminal = new SberbankTerminal()) {
             log.info("=== ПОДКЛЮЧЕНИЕ К ТЕРМИНАЛУ ===");
             terminal.connect();
             log.info("Терминал подключен!\n");
 
             makePay(terminal, 100);  // 1 руб = 100 коп
             // makeRefound(terminal, 100, null);  // Or use RNN String
-
-
         } catch (Exception e) {
             log.error("Критическая ошибка в примере", e);
-        } finally {
-            // 6. Закрытие соединения
-            log.info("\n=== ЗАКРЫТИЕ СОЕДИНЕНИЯ ===");
-            terminal.disconnect();
-            log.info("Соединение закрыто");
         }
     }
 }
