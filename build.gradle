@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group = 'homer.tastyworld'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.hynnet:jacob:1.18"
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+}
