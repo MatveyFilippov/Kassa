@@ -214,10 +214,20 @@ public class SberbankTerminal implements AutoCloseable {
                     request.getCashierFio()
             );
 
-            // Для возврата также можно передать RRN исходной операции
-            // (нужно добавить поле в PaymentRequest, если требуется)
-            // params.put("RRN", request.getOriginalRrn());
+            // Если указан RRN - возврат без карты
+            if (request.getOriginalRrn() != null && !request.getOriginalRrn().isEmpty()) {
+                log.info("Возврат без карты по RRN: {}", request.getOriginalRrn());
 
+                // По документации:
+                // Track2 = "QSELECT" - означает возврат без карты
+                // RRN - номер ссылки на исходную операцию
+                params.put("Track2", "QSELECT");
+                params.put("RRN", request.getOriginalRrn());
+
+                log.debug("Установлены параметры для возврата без карты");
+            }
+
+            // Установка параметров
             parameterMapper.setParameters(connectionManager.getTerminal(), params);
 
             // Вызов операции возврата (4002)

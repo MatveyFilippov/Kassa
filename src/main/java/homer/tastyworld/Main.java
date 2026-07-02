@@ -72,15 +72,16 @@ public class Main {
         }
     }
 
-    private static void makeRefound(SberbankTerminal terminal) {
+    private static void makeRefound(SberbankTerminal terminal, long kopecks, String rrn) {
         log.info("\n=== ВОЗВРАТ СРЕДСТВ ===");
         String refundRequestId = RequestIdGenerator.generate();
         log.info("Сгенерирован RequestID для возврата: {}", refundRequestId);
 
-        PaymentRequest refundRequest = new PaymentRequest.Builder(100000) // Возврат 1000 руб
-                                                                          .withRequestId(refundRequestId)
-                                                                          .withCashierFio("Иванов И.И. (возврат)")
-                                                                          .build();
+        PaymentRequest refundRequest = new PaymentRequest.Builder(kopecks)
+                                                          .withRequestId(refundRequestId)
+                                                          .withOriginalRrn(rrn)
+                                                          .withCashierFio("Иванов И.И. (возврат)")
+                                                          .build();
 
         PaymentResponse refundResponse = terminal.refund(refundRequest);
 
@@ -88,6 +89,7 @@ public class Main {
             log.info("✅ ВОЗВРАТ УСПЕШЕН!");
             log.info("RRN возврата: {}", refundResponse.getRrn());
             log.info("AuthCode возврата: {}", refundResponse.getAuthCode());
+            // log.info("Деньги вернулись на карту: {}", refundResponse.getClientCard());
 
             System.out.println("\n=== ЧЕК ВОЗВРАТА ===");
             System.out.println(refundResponse.getCheque());
@@ -110,7 +112,7 @@ public class Main {
             log.info("Терминал подключен!\n");
 
             makePay(terminal, 100);  // 1 руб = 100 коп
-            // makeRefound(terminal);
+            // makeRefound(terminal, 100, null);  // Or use RNN String
 
 
         } catch (Exception e) {

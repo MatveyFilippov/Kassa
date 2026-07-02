@@ -54,6 +54,16 @@ public class PaymentRequest {
     private final String cashierFio;
 
     /**
+     * RRN исходной операции для возврата без карты.
+     *
+     * <p>Если указан, терминал найдет исходную операцию по RRN
+     * и вернет деньги на ту же карту.
+     *
+     * <p>Если не указан, клиент должен приложить карту.
+     */
+    private final String originalRrn;
+
+    /**
      * Приватный конструктор для использования Builder'ом.
      */
     private PaymentRequest(Builder builder) {
@@ -62,6 +72,7 @@ public class PaymentRequest {
         this.department = builder.department;
         this.currencyCode = builder.currencyCode;
         this.cashierFio = builder.cashierFio;
+        this.originalRrn = builder.originalRrn;
     }
 
     // Getters
@@ -70,6 +81,7 @@ public class PaymentRequest {
     public Integer getDepartment() { return department; }
     public Integer getCurrencyCode() { return currencyCode; }
     public String getCashierFio() { return cashierFio; }
+    public String getOriginalRrn() { return originalRrn; }
 
     @Override
     public String toString() {
@@ -86,6 +98,7 @@ public class PaymentRequest {
         private Integer department;
         private Integer currencyCode;
         private String cashierFio;
+        private String originalRrn;
 
         /**
          * @param amountKopecks Сумма в КОПЕЙКАХ (обязательный параметр)
@@ -150,6 +163,24 @@ public class PaymentRequest {
          */
         public Builder withCashierFio(String cashierFio) {
             this.cashierFio = cashierFio;
+            return this;
+        }
+
+        /**
+         * Устанавливает RRN исходной операции для возврата без карты.
+         *
+         * @param rrn RRN из успешной операции оплаты
+         */
+        public Builder withOriginalRrn(String rrn) {
+            if (rrn != null && !rrn.isEmpty()) {
+                // RRN обычно 15-19 символов
+                if (rrn.length() < 12 || rrn.length() > 19) {
+                    throw new IllegalArgumentException(
+                            "RRN должен быть от 12 до 19 символов"
+                    );
+                }
+                this.originalRrn = rrn;
+            }
             return this;
         }
 
